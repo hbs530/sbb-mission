@@ -38,3 +38,4 @@ class SbbApplicationTests {
 		assertEquals("네 자동으로 생성됩니다.", answerList.get(0).getContent());
 	}
 }
+
