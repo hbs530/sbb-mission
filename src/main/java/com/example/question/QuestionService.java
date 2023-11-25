@@ -3,7 +3,7 @@ package com.example.question;
 import java.util.List;
 import java.util.Optional;
 import java.time.LocalDateTime;
-
+import com.example.user.SiteUser;
 import com.example.sbbmission.DataNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +46,7 @@ public class QuestionService {
         q.setSubject(subject);
         q.setContent(content);
         q.setCreateDate(LocalDateTime.now());
+        q.setAuthor(user);
         this.questionRepository.save(q);
     }
 }
