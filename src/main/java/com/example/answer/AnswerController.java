@@ -1,5 +1,7 @@
 package com.example.answer;
 
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 import com.example.question.Question;
 import com.example.question.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +21,15 @@ public class AnswerController {
     private final AnswerService answerService;
 
     @PostMapping("/create/{id}")
-    public String createAnswer(Model model, @PathVariable("id") Integer id, @RequestParam String content) {
+    public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid AnswerForm answerForm, BindingResult bindingResult) {
+
         Question question = this.questionService.getQuestion(id);
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("question", question);
+            return "question_detail";
+        }
         // TODO: 답변을 저장한다.
-        this.answerService.create(question, content);
+        this.answerService.create(question, answerForm.getContent());
         return String.format("redirect:/question/detail/%s", id);
     }
 }

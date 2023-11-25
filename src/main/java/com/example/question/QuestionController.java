@@ -7,13 +7,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+import com.example.answer.AnswerForm;
 
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/question")
 @RequiredArgsConstructor
 @Controller
-
 public class QuestionController {
 
     private final QuestionService questionService;
@@ -22,13 +26,25 @@ public class QuestionController {
     public String list(Model model) {
         List<Question> questionList = this.questionService.getList();
         model.addAttribute("questionList", questionList);
-        String questionList1 = "question_list";
-        return questionList1;
+        return "question_list";
     }
     @GetMapping(value = "/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id) {
+    public String detail(Model model, @PathVariable("id") Integer id, AnswerForm answerForm) {
         Question question = this.questionService.getQuestion(id);
         model.addAttribute("question", question);
         return "question_detail";
+    }
+    @GetMapping("/create")
+    public String questionCreate(QuestionForm questionForm) {
+        return "question_form";
+    }
+    @PostMapping("/create")
+    public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "question_form";
+        }
+        // TODO 질문을 저장한다.
+        this.questionService.create(questionForm.getSubject(), questionForm.getContent());
+        return "redirect:/question/list"; // 질문 저장후 질문목록으로 이동
     }
 }
